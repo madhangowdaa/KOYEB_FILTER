@@ -162,6 +162,9 @@ async def next_page(bot, query):
             )
         else:
             btn.insert(0, 
+                 [
+                InlineKeyboardButton("𝐇𝐨𝐰 𝐓𝐨 𝐆𝐞𝐭 𝐅𝐢𝐥𝐞𝐬", url="t.me/MoviezAddaKann/6")
+             ],
                 [
                     InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', 'minfo'),
                     InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', 'sinfo')
