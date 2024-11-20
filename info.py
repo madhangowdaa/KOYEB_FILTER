@@ -49,7 +49,7 @@ COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 
 # Others
 IS_VERIFY = is_enabled((environ.get('IS_VERIFY', 'False')), False)
-HOW_TO_VERIFY = environ.get('HOW_TO_VERIFY', "https://t.me/MoviezAddaKann/3")
+HOW_TO_VERIFY = environ.get('HOW_TO_VERIFY', "https://t.me/MoviezAddaKann/2")
 VERIFY2_URL = environ.get('VERIFY2_URL', "omegalinks.in")
 VERIFY2_API = environ.get('VERIFY2_API', "608fceed2159a90b487312813f003b17fa7fc8fe")
 SHORTLINK_URL = environ.get('SHORTLINK_URL', 'omegalinks.in')
