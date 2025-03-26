@@ -255,23 +255,31 @@ async def imdb_callback(bot: Client, query: CallbackQuery):
     if not imdb:
         return await query.message.edit("❌ No details found.", reply_markup=None)
 
-    imdb_id = imdb.get('id', '')  # IMDb ID (e.g., tt25151410)
+    imdb_id = imdb.get('id', '').strip()  # Ensure it's a valid string
+
+    # IMDb Links
     imdb_link = imdb.get('url', 'https://www.imdb.com/')
+    release_info_link = f"https://www.imdb.com/title/{imdb_id}/releaseinfo" if imdb_id else "https://www.imdb.com/"
+    imdb_releaseinfo_link = imdb_link + "/releaseinfo"
 
-    # Convert release date format to DD/MM/YYYY
+    # Convert release date format to DD/MM/YYYY safely
     raw_release_date = imdb.get('release_date', 'N/A')
-    try:
-        formatted_date = datetime.strptime(raw_release_date, "%d %B %Y").strftime("%d/%m/%Y")
-    except ValueError:
-        formatted_date = raw_release_date  # If parsing fails, use original
 
-    release_info_link = f"https://www.imdb.com/title/{imdb_id}/releaseinfo"
+    if isinstance(raw_release_date, str) and raw_release_date not in ["N/A", ""]:
+        raw_release_date = " ".join(raw_release_date.split())  # Fix extra spaces
+        try:
+            formatted_date = datetime.strptime(raw_release_date, "%d %B %Y").strftime("%d/%m/%Y")
+        except ValueError:
+            formatted_date = raw_release_date  # Use the original if parsing fails
+    else:
+        formatted_date = "N/A"  # Default if missing
 
     # Format genres with only ONE emoji
-    genres = imdb.get('genres', '').split(',')
-    first_genre = genres[0].strip() if genres else "Unknown"
+    genres = [g.strip() for g in imdb.get('genres', '').split(',') if g.strip()]  # Removes empty entries
+    first_genre = genres[0] if genres else "Unknown"
     emoji = GENRE_EMOJIS.get(first_genre, "🎭")  # Default emoji if not found
-    genres_text = f"{emoji} " + " ".join([f"#{g.strip().replace(' ', '_')}" for g in genres])
+    genres_text = f"{emoji} " + ", ".join([f"#{g.replace(' ', '_')}" for g in genres])  # Added comma
+
 
     # Format languages properly
     languages = imdb.get('languages', '').split(',')
@@ -282,13 +290,21 @@ async def imdb_callback(bot: Client, query: CallbackQuery):
     aka_titles = imdb.get('aka', '').split(',')
     also_known_as = aka_titles[0] if aka_titles else main_title  # Remove year from "Also Known As"
 
+    # Convert runtime (if available) to "H h M min" format
+    runtime_minutes = imdb.get('runtime', 'N/A')
+    if isinstance(runtime_minutes, str) and runtime_minutes.isdigit():
+        hours, minutes = divmod(int(runtime_minutes), 60)
+        formatted_runtime = f"{hours}h {minutes}min" if hours else f"{minutes}min"
+    else:
+        formatted_runtime = runtime_minutes  # If runtime is not a digit, use original
+
     # Formatting the response
     response_text = (
-        f"<b>Title:</b> {main_title} ({imdb.get('year', 'N/A')})\n"
-        f"<i>Also Known As:</i> {also_known_as}\n"
-        f"<b>Rating:</b> {imdb.get('rating', 'N/A')} / 10\n"
-        f"({imdb.get('votes', '0')} based on user ratings) || {imdb.get('runtime', 'N/A')}\n"
-        f"<b>Release Date:</b> <a href='{release_info_link}'>{formatted_date}</a>\n"
+        f"<b>Movie:</b> <a href='{imdb_link}'>{imdb.get('title', 'N/A')} [{imdb.get('year', '2020')}]</a>\n"
+        f"<i>Also Known As</i>: {imdb.get('title', '')}\n"
+        f"<b>Rating ⭐️:</b> {imdb.get('rating', '')} / 10\n"
+        f"<code>({imdb.get('rating','')} based on {imdb.get('votes', '0')} user ratings) || {formatted_runtime} |</code>\n"
+        f"<b>Release Date:</b> <a href='{imdb_releaseinfo_link}'>{formatted_date}</a>\n"
         f"<b>Genre:</b> {genres_text}\n"
         f"<b>Language:</b> {languages_text}"
     )
@@ -301,7 +317,6 @@ async def imdb_callback(bot: Client, query: CallbackQuery):
     )
 
     await query.answer()
-
         
 
         
