@@ -61,17 +61,13 @@ async def save_group(bot, message):
                 temp.MELCOW['welcome'] = await message.reply_video(
                                                  video=(MELCOW_VID),
                                                  caption=(script.MELCOW_ENG.format(u.mention, message.chat.title)),
-                                                 reply_markup=InlineKeyboardMarkup(
-                                                                         [
-                                                                            InlineKeyboardButton("𝐇𝐨𝐰 𝐓𝐨 𝐆𝐞𝐭 𝐅𝐢𝐥𝐞𝐬", url="t.me/MoviezAddaKann/6")
-                                                                            ],
-                                                                         [[
-                                                                           InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
-                                                                           InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)
-                                                                        ],[
-                                                                           InlineKeyboardButton("Bᴏᴛ Oᴡɴᴇʀ", url="t.me/kmadminsbot")
-                                                                         ]]
-                                                 ),
+                                                 reply_markup=InlineKeyboardMarkup([
+                                                              [InlineKeyboardButton("𝐇𝐨𝐰 𝐓𝐨 𝐆𝐞𝐭 𝐅𝐢𝐥𝐞𝐬", url="t.me/MoviezAddaKann/10")],
+                                                              [InlineKeyboardButton('Sᴜᴘᴘᴏʀᴛ Gʀᴏᴜᴘ', url=GRP_LNK),
+                                                               InlineKeyboardButton('Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ', url=CHNL_LNK)],  # ❌ Removed extra brackets here
+                                                              [InlineKeyboardButton("Bᴏᴛ Oᴡɴᴇʀ", url="t.me/kmadminsbot")]
+                                                 ]), 
+
                                                  parse_mode=enums.ParseMode.HTML
                 )
                 
