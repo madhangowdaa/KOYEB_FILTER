@@ -248,26 +248,50 @@ async def imdb_search(client, message: Message):
         await message.reply('❗ Provide a movie or series name after the command.')
 
 @Client.on_message(filters.command(["getimg"]))
-async def imdb_poster(client, message: Message):
+async def imdb_poster_search(client, message: Message):
     if ' ' in message.text:
-        k = await message.reply('🔎 Searching IMDb Poster...')
+        k = await message.reply('🔎 Searching IMDb...')
         _, title = message.text.split(None, 1)
-        imdb = await get_poster(title)
+        movies = await get_poster(title, bulk=True)
 
-        if not imdb or "poster" not in imdb:
-            return await k.edit("❌ No poster found.")
+        if not movies:
+            return await k.edit("❌ No results found.")
 
-        poster_url = imdb.get("poster")
-        movie_title = imdb.get("title", "Unknown Movie")
-
-        await k.delete()  # Remove the "Searching" message
-        await message.reply_photo(
-            photo=poster_url,
-            caption=f"<b>{movie_title}</b>\n🔗 <a href='{imdb.get('url', 'https://www.imdb.com/')}'>View on IMDb</a>",
-            parse_mode=enums.ParseMode.HTML
-        )
+        # Generate buttons for multiple search results
+        btn = [
+            [
+                InlineKeyboardButton(
+                    text=f"{movie.get('title')} - {movie.get('year')}",
+                    callback_data=f"poster#{movie.movieID}",
+                )
+            ]
+            for movie in movies
+        ]
+        await k.edit('🖼 Select a movie to get the poster:', reply_markup=InlineKeyboardMarkup(btn))
     else:
         await message.reply('❗ Provide a movie or series name after the command.')
+
+# Callback handler for fetching only the poster
+@Client.on_callback_query(filters.regex('^poster'))
+async def imdb_poster_callback(bot: Client, query: CallbackQuery):
+    _, movie_id = query.data.split('#')
+    imdb = await get_poster(query=movie_id, id=True)
+
+    if not imdb or "poster" not in imdb:
+        return await query.message.edit("❌ No poster found.", reply_markup=None)
+
+    poster_url = imdb.get("poster")
+    movie_title = imdb.get("title", "Unknown Movie")
+    imdb_link = imdb.get("url", "https://www.imdb.com/")
+
+    await query.message.reply_photo(
+        photo=poster_url,
+        caption=f"<b>{movie_title}</b>\n\n🔗 <b>Uploaded by: @MoviezAddaKA</b>",
+        parse_mode=enums.ParseMode.HTML
+        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔗 View on IMDb", url=imdb_link)]]) 
+    )
+    await query.answer()
+
 
 
 @Client.on_callback_query(filters.regex('^imdb'))
