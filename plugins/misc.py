@@ -247,6 +247,29 @@ async def imdb_search(client, message: Message):
     else:
         await message.reply('❗ Provide a movie or series name after the command.')
 
+@Client.on_message(filters.command(["getimg"]))
+async def imdb_poster(client, message: Message):
+    if ' ' in message.text:
+        k = await message.reply('🔎 Searching IMDb Poster...')
+        _, title = message.text.split(None, 1)
+        imdb = await get_poster(title)
+
+        if not imdb or "poster" not in imdb:
+            return await k.edit("❌ No poster found.")
+
+        poster_url = imdb.get("poster")
+        movie_title = imdb.get("title", "Unknown Movie")
+
+        await k.delete()  # Remove the "Searching" message
+        await message.reply_photo(
+            photo=poster_url,
+            caption=f"<b>{movie_title}</b>\n🔗 <a href='{imdb.get('url', 'https://www.imdb.com/')}'>View on IMDb</a>",
+            parse_mode=enums.ParseMode.HTML
+        )
+    else:
+        await message.reply('❗ Provide a movie or series name after the command.')
+
+
 @Client.on_callback_query(filters.regex('^imdb'))
 async def imdb_callback(bot: Client, query: CallbackQuery):
     _, movie_id = query.data.split('#')
