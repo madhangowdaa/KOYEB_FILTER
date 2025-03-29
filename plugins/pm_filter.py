@@ -161,7 +161,7 @@ async def next_page(bot, query):
                 ]
             )
         else:
-            btn.insert(0, [InlineKeyboardButton("⚡ 𝐇𝐨𝐰 𝐓𝐨 𝐆𝐞𝐭 𝐅𝐢𝐥𝐞𝐬 ⚡", url=f"https://t.me/MoviezAddaKann/10"))])
+            btn.insert(0, [InlineKeyboardButton("⚡ 𝐇𝐨𝐰 𝐓𝐨 𝐆𝐞𝐭 𝐅𝐢𝐥𝐞𝐬 ⚡", url=f"https://t.me/MoviezAddaKann/10")])
             btn.insert(1, [
                             InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', callback_data='minfo'),
                             InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', callback_data='sinfo')
@@ -242,7 +242,7 @@ async def next_page(bot, query):
                 ],
             )
     btn.insert(0, [[InlineKeyboardButton("🌟 Our Official Channel 🌟", url=f"https://t.me/MoviezAddaKA")]])
-    btn.insert(0, [InlineKeyboardButton("⚡ 𝐇𝐨𝐰 𝐓𝐨 𝐆𝐞𝐭 𝐅𝐢𝐥𝐞𝐬 ⚡", url=f"https://t.me/MoviezAddaKann/10"))])
+    btn.insert(0, [InlineKeyboardButton("⚡ 𝐇𝐨𝐰 𝐓𝐨 𝐆𝐞𝐭 𝐅𝐢𝐥𝐞𝐬 ⚡", url=f"https://t.me/MoviezAddaKann/10")])
     try:
         await query.edit_message_reply_markup(
             reply_markup=InlineKeyboardMarkup(btn)
