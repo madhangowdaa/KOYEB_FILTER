@@ -161,7 +161,7 @@ async def next_page(bot, query):
                 ]
             )
         else:
-            btn.insert(0, [InlineKeyboardButton("𝐇𝐨𝐰 𝐓𝐨 𝐆𝐞𝐭 𝐅𝐢𝐥𝐞𝐬", url="t.me/MoviezAddaKann/6")])
+            btn.insert(0, InlineKeyboardButton("⚡ 𝐇𝐨𝐰 𝐓𝐨 𝐆𝐞𝐭 𝐅𝐢𝐥𝐞𝐬 ⚡", url=f"https://t.me/MoviezAddaKann/10"))
             btn.insert(1, [
                             InlineKeyboardButton(f'ᴍᴏᴠɪᴇ', callback_data='minfo'),
                             InlineKeyboardButton(f'ꜱᴇʀɪᴇꜱ', callback_data='sinfo')
