@@ -287,7 +287,7 @@ async def imdb_poster_callback(bot: Client, query: CallbackQuery):
     await query.message.reply_photo(
         photo=poster_url,
         caption=f"<b>{movie_title}</b>\n\n🔗 <b>Uploaded by: @MoviezAddaKA</b>",
-        parse_mode=enums.ParseMode.HTML
+        parse_mode=enums.ParseMode.HTML,
         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("🔗 View on IMDb", url=imdb_link)]]) 
     )
     await query.answer()
