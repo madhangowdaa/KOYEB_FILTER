@@ -1,7 +1,9 @@
 import logging
 from pyrogram.errors import InputUserDeactivated, UserNotParticipant, FloodWait, UserIsBlocked, PeerIdInvalid, ChatAdminRequired
 from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, SHORTLINK_URL, SHORTLINK_API, LOG_CHANNEL, GRP_LNK, CHNL_LNK, CUSTOM_FILE_CAPTION, IS_VERIFY, VERIFY2_URL, VERIFY2_API, PROTECT_CONTENT, HOW_TO_VERIFY
-from imdb import Cinemagoer 
+import cloudscraper
+from imdb import Cinemagoer
+from imdb.parser.http import IMDbHTTPAccessSystem
 import asyncio
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 from pyrogram import enums
@@ -25,7 +27,18 @@ logger.setLevel(logging.INFO)
 BTN_URL_REGEX = re.compile(
     r"(\[([^\[]+?)\]\((buttonurl|buttonalert):(?:/{0,2})(.+?)(:same)?\))"
 )
+# Monkeypatch IMDbHTTPAccessSystem._retrieve to use cloudscraper
+scraper = cloudscraper.create_scraper()
 
+def _retrieve_patched(self, url, size=-1, _noCookies=False):
+    try:
+        response = scraper.get(url)
+        response.raise_for_status()
+        return response.text
+    except Exception as e:
+        raise
+
+IMDbHTTPAccessSystem._retrieve = _retrieve_patched
 imdb = Cinemagoer()
 TOKENS = {}
 VERIFIED = {}
